@@ -1,6 +1,5 @@
 # CMPE283
 By Hyesung Ko
-***
 
 ## Assignment 1
 ### Description
