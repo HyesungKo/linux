@@ -5,37 +5,38 @@ By Hyesung Ko
 ## Assignment 1
 ### Description
 
-1. Install and login to Ubuntu Machine
-2. Clone the following linux repository
-	[https://github.com/torvalds/linux](https://github.com/torvalds/linux)
-3. Change directory to the cloned linux directory
-		$ cd linux
-4. Check the current kernel version using following command
-		$ uname -a
-5. Copy config file of your kernel to cloned linux directory with ".config" name
-		cp /boot/{your_linux_config_file} .config
-6. Change the value of the following values in .config file because of certification issue.
-		CONFIG_SYSTEM_TRUSTED_KEYS=""
-		CONFIG_SYSTEM_REVOCATION_KEYS=""
-6. Type the following command to configure new kernel using your kernels config file
-		$ make oldconfig`
-7. Keep press enter to answer the questions with default answer Make modules and Kernel by typing the following commands (Could take a couple hours)
-		$ make -j 4 modules 
-		$ make -j 4
-		$ sudo make INSTALL_MOD_STRIP=1 modules_install
-		$ sudo make install
-8. Reboot the machine
-		`$ sudo reboot`
-9. Check the kernel version
-		$ uname -a
-10. Make directory for cmpe283 assignment1
-		$ mkdir cmpe283
-		$ cd cmpe283
-		$ mkdir assignment1
-		$ cd assignment1
-11. Copy the two given files, cmpe283-1.c and Makefile, in the current directory from Download
-		$ cp ~/Downloads/cmpe283-1.c ~/Downloads/Makefile .
-12. Add the following code to cmpe283-1.c file under `struct capability_info pinbased[5]` to display other capabilities in addition to the given pinbased controls
+1. Install and login to Ubuntu Machine  
+2. Clone the following linux repository  
+	[https://github.com/torvalds/linux](https://github.com/torvalds/linux)  
+3. Change directory to the cloned linux directory  
+	`$ cd linux`
+4. Check the current kernel version using following command  
+	`$ uname -a`
+5. Copy config file of your kernel to cloned linux directory with ".config" name  
+	`cp /boot/{your_linux_config_file} .config`
+6. Change the value of the following values in .config file because of certification issue.  
+	`CONFIG_SYSTEM_TRUSTED_KEYS=""`  
+	`CONFIG_SYSTEM_REVOCATION_KEYS=""`
+6. Type the following command to configure new kernel using your kernels config file  
+		`$ make oldconfig`
+7. Keep press enter to answer the questions with default answer Make modules and Kernel by typing the following commands (Could take a couple hours)  
+	`$ make -j 4 modules`   
+	`$ make -j 4`  
+	`$ sudo make INSTALL_MOD_STRIP=1 modules_install`  
+	`$ sudo make install`
+8. Reboot the machine  
+	`$ sudo reboot`
+9. Check the kernel version  
+	`$ uname -a`
+10. Make directory for cmpe283 assignment1  
+	`$ mkdir cmpe283`  
+	`$ cd cmpe283`  
+	`$ mkdir assignment1`  
+	`$ cd assignment1`
+11. Copy the two given files, cmpe283-1.c and Makefile, in the current directory from Download  
+	`$ cp ~/Downloads/cmpe283-1.c ~/Downloads/Makefile .`
+
+12. Add the following code to cmpe283-1.c file under `struct capability_info pinbased[5]` to display other capabilities in addition to the given pinbased controls  
 
 		struct capability_info procbased[22] =
 		{
@@ -127,7 +128,7 @@ By Hyesung Ko
 			{ 20, "Load CET state" },
 			{ 22, "Load PKRS" }
 		};
-13. Modify `detect_vmx_feature` function as following:
+13. Modify `detect_vmx_feature` function as following  
 
 		void
 		detect_vmx_features(void)
@@ -166,12 +167,11 @@ By Hyesung Ko
 		}	
 		
 
-14. Type the following command to build and add it to kernel
-		$ make
-		$ sudo insmod cmpe283-1.ko
-15. Display the message
-		$ dmesg
-
-16. Remove module from kernel
-		$ sudo rmmod cmpe283-1
+14. Type the following command to build and add it to kernel  
+	`$ make`  
+	`$ sudo insmod cmpe283-1.ko`
+15. Display the message  
+	`$ dmesg`
+16. Remove module from kernel  
+	`$ sudo rmmod cmpe283-1`
 
