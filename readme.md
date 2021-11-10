@@ -35,7 +35,7 @@ Keep press enter to answer the questions with default answer
 	`$ cd assignment1`
 11. Copy the two given files, cmpe283-1.c and Makefile, in the current directory from Download  
 	`$ cp ~/Downloads/cmpe283-1.c ~/Downloads/Makefile .`
-12. Add and define the other model specific registers in addition to pinbased  
+12. Add and define the other model specific registers in addition to pinbased in cmpe283-1.c file  
 
 		#define IA32_VMX_PINBASED_CTLS	0x481
 		#define IA32_VMX_PROCBASED_CTLS	0x482
