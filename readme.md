@@ -36,8 +36,14 @@ Keep press enter to answer the questions with default answer
 	`$ cd assignment1`
 11. Copy the two given files, cmpe283-1.c and Makefile, in the current directory from Download  
 	`$ cp ~/Downloads/cmpe283-1.c ~/Downloads/Makefile .`
+12. Add and define the other model specific registers in addition to pinbased  
 
-12. Add the following code to cmpe283-1.c file under `struct capability_info pinbased[5]` to display other capabilities in addition to the given pinbased controls  
+		#define IA32_VMX_PINBASED_CTLS	0x481
+		#define IA32_VMX_PROCBASED_CTLS	0x482
+		#define IA32_VMX_PROCBASED_CTLS2	0x48B
+		#define IA32_VMX_EXIT_CTLS		0x483
+		#define IA32_VMX_ENTRY_CTLS		0x484
+13. Add the following code to cmpe283-1.c file under `struct capability_info pinbased[5]` to display other capabilities in addition to the given pinbased controls  
 
 		struct capability_info procbased[22] =
 		{
@@ -129,7 +135,7 @@ Keep press enter to answer the questions with default answer
 			{ 20, "Load CET state" },
 			{ 22, "Load PKRS" }
 		};
-13. Modify `detect_vmx_feature` function as following  
+14. Modify `detect_vmx_feature` function as following  
 
 		void
 		detect_vmx_features(void)
@@ -166,16 +172,16 @@ Keep press enter to answer the questions with default answer
 				(uint64_t)(lo | (uint64_t)hi << 32));
 			report_capability(entry_ctl, 12, lo, hi);
 		}	
-14. Add License at the end of the cmpe283-1.c file  
+15. Add License at the end of the cmpe283-1.c file  
 	`MODULE_LICENSE("GPL v2");`
-15. Type the following command to build and add it to kernel  
+16. Type the following command to build and add it to kernel  
 	`$ make`  
 	`$ sudo insmod cmpe283-1.ko`
-16. Display the message  
+17. Display the message  
 	`$ dmesg`
-17. Remove module from kernel  
+18. Remove module from kernel  
 	`$ sudo rmmod cmpe283-1`
-18. Screenshots of the output
+19. Screenshots of the output
 ![output1](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output1.png)  
 ![output2](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output2.png)  
 ![output3](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output3.png)
