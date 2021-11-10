@@ -18,8 +18,9 @@ By Hyesung Ko
 	`CONFIG_SYSTEM_TRUSTED_KEYS=""`  
 	`CONFIG_SYSTEM_REVOCATION_KEYS=""`
 6. Type the following command to configure new kernel using your kernels config file  
-		`$ make oldconfig`
-7. Keep press enter to answer the questions with default answer Make modules and Kernel by typing the following commands (Could take a couple hours)  
+Keep press enter to answer the questions with default answer  
+	`$ make oldconfig`
+7. Make modules and Kernel by typing the following commands (Could take a couple hours)  
 	`$ make -j 4 modules`   
 	`$ make -j 4`  
 	`$ sudo make INSTALL_MOD_STRIP=1 modules_install`  
@@ -166,7 +167,7 @@ By Hyesung Ko
 			report_capability(entry_ctl, 12, lo, hi);
 		}	
 14. Add License at the end of the cmpe283-1.c file  
-	`MODULE_LICENSE("GPL v2");`
+		MODULE_LICENSE("GPL v2");
 15. Type the following command to build and add it to kernel  
 	`$ make`  
 	`$ sudo insmod cmpe283-1.ko`
