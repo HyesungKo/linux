@@ -165,13 +165,17 @@ By Hyesung Ko
 				(uint64_t)(lo | (uint64_t)hi << 32));
 			report_capability(entry_ctl, 12, lo, hi);
 		}	
-		
-
-14. Type the following command to build and add it to kernel  
+14. Add License at the end of the cmpe283-1.c file  
+	`MODULE_LICENSE("GPL v2");`
+15. Type the following command to build and add it to kernel  
 	`$ make`  
 	`$ sudo insmod cmpe283-1.ko`
-15. Display the message  
+16. Display the message  
 	`$ dmesg`
-16. Remove module from kernel  
+17. Remove module from kernel  
 	`$ sudo rmmod cmpe283-1`
+18. Screenshots of the output
+![output1](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output1.png)  
+![output2](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output2.png)  
+![output3](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output3.png)
 
