@@ -179,7 +179,7 @@ Keep press enter to answer the questions with default answer
 17. Display the message  
 	`$ dmesg`
 18. Remove module from kernel  
-	`$ sudo rmmod cmpe283-1`
+	`$ sudo rmmod cmpe283_1`
 19. Screenshots of the output
 ![output1](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output1.png)  
 ![output2](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output2.png)  
