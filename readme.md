@@ -167,7 +167,7 @@ Keep press enter to answer the questions with default answer
 			report_capability(entry_ctl, 12, lo, hi);
 		}	
 14. Add License at the end of the cmpe283-1.c file  
-		MODULE_LICENSE("GPL v2");
+	`MODULE_LICENSE("GPL v2");`
 15. Type the following command to build and add it to kernel  
 	`$ make`  
 	`$ sudo insmod cmpe283-1.ko`
