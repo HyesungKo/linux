@@ -5,9 +5,10 @@ By Hyesung Ko
 ### Description
 
 1. Install and login to Ubuntu Machine  
-2. Clone the following linux repository  
+2. Fork the following linux repository  
 	[https://github.com/torvalds/linux](https://github.com/torvalds/linux)  
-3. Change directory to the cloned linux directory  
+3. Clone the forked repository and Change directory to the cloned linux directory  
+	`$ git clone https://github.com/HyesungKo/linux`  
 	`$ cd linux`
 4. Check the current kernel version using following command  
 	`$ uname -a`
