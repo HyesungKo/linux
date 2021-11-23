@@ -286,7 +286,7 @@ When I modified the codes above I change the directory to linux file and reload 
 Once I load the updated `kvm` and `kvm_intel` modules, open the virtual machine using `virt-manager` and test the cpuid features. The outputs are following:  
 
 ![fe](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/fe.png)
-
+![dc](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/dc.png)
 
 
 
