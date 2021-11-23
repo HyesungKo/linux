@@ -266,12 +266,15 @@ To read the count and cycle following code are used for each eax value:
 		}  
 	        
 
-`isValid()` function check the ecx value is correct and the code is following:  
+`isValid()` function check the ecx value is correct, if the number is in sdm or not, and the code is following:  
 	
 	if(isValid(&eax, &ebx, &ecx, &edx)) {
-                u64 time = exit_time[ecx];
-                ebx = (u32)(time >> 32);
-                ecx = (u32)time;
+		if(*ecx > 74 || *ecx == 35 || *ecx == 38 || *ecx == 42 || *ecx == 65 || *ecx == 70 || *ecx == 71 || *ecx == 72 || *ecx == 73 ) {
+			*eax = *ebx = *ecx = 0;
+			*edx = 0xffffffff;
+			return 0;
+		}
+		return 1;
 	}
 
 When I modified the codes above I change the directory to linux file and reload the `kvm` and `kvm_intel` modules using the following command.  
