@@ -191,49 +191,55 @@ Keep press enter to answer the questions with default answer
 To configure the cpuid, I have have edited 2 files in linux kernel, `arch/x86/kvm/cpuid.c`, `arch/x86/kvm/vmx/vmx.c`. Firstly, I have added two shared arrays to be used to store the number of exit and the time of the exit using `EXPORT_SYMBOL_GPL` and `extern` array.  
 Under the file `../cpuid.c`  
 		
-		u32 exit_categories[75] = {0};
-		u64 exit_time[75] ={0};
+	u32 exit_categories[75] = {0};
+	u64 exit_time[75] ={0};
 
-		EXPORT_SYMBOL_GPL(exit_categories);
-		EXPORT_SYMBOL_GPL(exit_time);
+	EXPORT_SYMBOL_GPL(exit_categories);
+	EXPORT_SYMBOL_GPL(exit_time);
 
 Under the file `../vmx.c`  
 		
-		extern u32 exit_categories[75];
-		extern u64 exit_time[75];
+	extern u32 exit_categories[75];
+	extern u64 exit_time[75];
 
-When I add the above code in those two file, I have the shared variables, exit_categories and exit_time. Therefore, When I updated the variables in `vmx.c` file, I am able to access the updated variable from another file and read in `cpuid.c` file.  
+When I add the above code in those two file, I have the shared variables, `exit_categories` and `exit_time`. Therefore, When I updated the variables in `vmx.c` file, I am able to access the updated variable from another file and read in `cpuid.c` file.  
 
 Under the file `../vmx.c` file, I have added 2 functions which is called in the funcion named `static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)`. The first function is `inc_exit_category((u16)exit_reason.basic)` which count the each exit based on the exit number. The other function is `add_exit_time((u16)exit_reason.basic)`, which count the cycle during each exit. `add_exit_time` function must be called before the function returns.  Those function will update the variable declared above.  
 
 To use rdtsc to count the cycle, I need to add the following in `../vmx.c` file.  
-		#define _MM_MALLOC_H_INCLUDED
-		#include <x86intrin.h> 
+		
+	#define _MM_MALLOC_H_INCLUDED
+	#include <x86intrin.h>
+	 
 The function update the arrays are following:
-		void inc_exit_category(u16 reason_index)
-		{
-			if (reason_index < 75){
-				exit_categories[reason_index]++;
-			}
-		}
 
-		void add_exit_time(u16 reason_index, u64 start)
-		{
-			if (reason_index < 75){
-				u64 delta = __rdtsc() - start;
-				exit_time[reason_index] += delta;
-			}
+	void inc_exit_category(u16 reason_index)
+	{
+		if (reason_index < 75){
+			exit_categories[reason_index]++;
 		}
+	}
+
+	void add_exit_time(u16 reason_index, u64 start)
+	{
+		if (reason_index < 75){
+			u64 delta = __rdtsc() - start;
+			exit_time[reason_index] += delta;
+		}
+	}
 
 To read the count and cycle following code are used for each eax value:  
 
 1. For CPUID leaf node %eax=0x4FFFFFFF:  
+		
 		u32 i;
 	        eax = 0;
 	        for (i = 0; i < 75; i++){
 	                eax += exit_categories[i];
 	        }
+	        
 2. For CPUID leaf node %eax=0x4FFFFFFE:  
+		
 		u64 sum = 0;
 		u32 i;
 		for (i = 0; i < 75; i++ ) {
@@ -244,23 +250,26 @@ To read the count and cycle following code are used for each eax value:
 
 
 3. For CPUID leaf node %eax=0x4FFFFFFD:  
+		
 		if(isValid(&eax, &ebx, &ecx, &edx)) {
 	                eax = exit_categories[ecx];
 	                ebx = ecx = edx = 0;
 	        }
 4. For CPUID leaf node %eax=0x4FFFFFFC:  
+		
 		if(isValid(&eax, &ebx, &ecx, &edx)) {
 	                u64 time = exit_time[ecx];
 	                ebx = (u32)(time >> 32);
 	                ecx = (u32)time;
 	        }
+	        
 
 isValid function check the ecx value is correct and the code is following:  
-		if(isValid(&eax, &ebx, &ecx, &edx)) {
-		                u64 time = exit_time[ecx];
-		                ebx = (u32)(time >> 32);
-		                ecx = (u32)time;
-		        }
+	if(isValid(&eax, &ebx, &ecx, &edx)) {
+                u64 time = exit_time[ecx];
+                ebx = (u32)(time >> 32);
+                ecx = (u32)time;
+        }
 
 
 
