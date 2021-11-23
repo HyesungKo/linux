@@ -291,9 +291,8 @@ Once I load the updated `kvm` and `kvm_intel` modules, open the virtual machine 
 ![fe](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/fe.png)
 ![dc](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/dc.png)
 
-### Q3. will be updated soon
-
-### Q4. Will be updated soon
+### Q3. will be updated for assignment 3
+### Q4. Will be updated for assignment 3
 
 
 
