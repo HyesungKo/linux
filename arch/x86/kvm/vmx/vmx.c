@@ -48,6 +48,9 @@
 #include <asm/virtext.h>
 #include <asm/vmx.h>
 
+#define _MM_MALLOC_H_INCLUDED
+#include <x86intrin.h>
+
 #include "capabilities.h"
 #include "cpuid.h"
 #include "evmcs.h"
@@ -5912,6 +5915,24 @@ void dump_vmcs(struct kvm_vcpu *vcpu)
 		       vmcs_read16(VIRTUAL_PROCESSOR_ID));
 }
 
+extern u32 exit_categories[75];
+extern u64 exit_time[75];
+
+void inc_exit_category(u16 reason_index)
+{
+	if (reason_index < 75){
+		exit_categories[reason_index]++;
+	}	
+}
+
+void add_exit_time(u16 reason_index, u64 start)
+{
+	if (reason_index < 75){
+		u64 delta = __rdtsc() - start;
+		exit_time[reason_index] += delta;
+	}
+}
+
 /*
  * The guest has exited.  See if we can fix it or if we need userspace
  * assistance.
@@ -5920,8 +5941,14 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 {
 	struct vcpu_vmx *vmx = to_vmx(vcpu);
 	union vmx_exit_reason exit_reason = vmx->exit_reason;
+	
+	// Start the clock
+	u64 start = __rdtsc();
+
 	u32 vectoring_info = vmx->idt_vectoring_info;
 	u16 exit_handler_index;
+	
+	inc_exit_category((u16)exit_reason.basic);
 
 	/*
 	 * Flush logged GPAs PML buffer, this will make dirty_bitmap more
@@ -5940,12 +5967,16 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 	 * below) should never happen as that means we incorrectly allowed a
 	 * nested VM-Enter with an invalid vmcs12.
 	 */
-	if (KVM_BUG_ON(vmx->nested.nested_run_pending, vcpu->kvm))
+	if (KVM_BUG_ON(vmx->nested.nested_run_pending, vcpu->kvm)){
+		add_exit_time((u16)exit_reason.basic, start);
 		return -EIO;
-
+	}
+	
 	/* If guest state is invalid, start emulating */
-	if (vmx->emulation_required)
+	if (vmx->emulation_required){
+		add_exit_time((u16)exit_reason.basic, start);
 		return handle_invalid_guest_state(vcpu);
+	}
 
 	if (is_guest_mode(vcpu)) {
 		/*
@@ -5968,8 +5999,11 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 		 */
 		nested_mark_vmcs12_pages_dirty(vcpu);
 
-		if (nested_vmx_reflect_vmexit(vcpu))
+		if (nested_vmx_reflect_vmexit(vcpu)){
+			add_exit_time((u16)exit_reason.basic, start);
 			return 1;
+	
+		}
 	}
 
 	if (exit_reason.failed_vmentry) {
@@ -5977,7 +6011,8 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 		vcpu->run->exit_reason = KVM_EXIT_FAIL_ENTRY;
 		vcpu->run->fail_entry.hardware_entry_failure_reason
 			= exit_reason.full;
-		vcpu->run->fail_entry.cpu = vcpu->arch.last_vmentry_cpu;
+		vcpu->run->fail_entry.cpu = vcpu->arch.last_vmentry_cpu;	
+		add_exit_time((u16)exit_reason.basic, start);
 		return 0;
 	}
 
@@ -5987,6 +6022,7 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 		vcpu->run->fail_entry.hardware_entry_failure_reason
 			= vmcs_read32(VM_INSTRUCTION_ERROR);
 		vcpu->run->fail_entry.cpu = vcpu->arch.last_vmentry_cpu;
+		add_exit_time((u16)exit_reason.basic, start);
 		return 0;
 	}
 
@@ -6016,6 +6052,7 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 		}
 		vcpu->run->internal.data[ndata++] = vcpu->arch.last_vmentry_cpu;
 		vcpu->run->internal.ndata = ndata;
+		add_exit_time((u16)exit_reason.basic, start);
 		return 0;
 	}
 
@@ -6038,24 +6075,32 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 		}
 	}
 
-	if (exit_fastpath != EXIT_FASTPATH_NONE)
+	if (exit_fastpath != EXIT_FASTPATH_NONE){
+		add_exit_time((u16)exit_reason.basic, start);
 		return 1;
-
+	}
 	if (exit_reason.basic >= kvm_vmx_max_exit_handlers)
 		goto unexpected_vmexit;
 #ifdef CONFIG_RETPOLINE
-	if (exit_reason.basic == EXIT_REASON_MSR_WRITE)
+	if (exit_reason.basic == EXIT_REASON_MSR_WRITE){
+		add_exit_time((u16)exit_reason.basic, start);
 		return kvm_emulate_wrmsr(vcpu);
-	else if (exit_reason.basic == EXIT_REASON_PREEMPTION_TIMER)
+	} else if (exit_reason.basic == EXIT_REASON_PREEMPTION_TIMER){
+		add_exit_time((u16)exit_reason.basic, start);
 		return handle_preemption_timer(vcpu);
-	else if (exit_reason.basic == EXIT_REASON_INTERRUPT_WINDOW)
+	} else if (exit_reason.basic == EXIT_REASON_INTERRUPT_WINDOW){
+		add_exit_time((u16)exit_reason.basic, start);
 		return handle_interrupt_window(vcpu);
-	else if (exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT)
+	} else if (exit_reason.basic == EXIT_REASON_EXTERNAL_INTERRUPT){
+		add_exit_time((u16)exit_reason.basic, start);
 		return handle_external_interrupt(vcpu);
-	else if (exit_reason.basic == EXIT_REASON_HLT)
+	} else if (exit_reason.basic == EXIT_REASON_HLT){
+		add_exit_time((u16)exit_reason.basic, start);
 		return kvm_emulate_halt(vcpu);
-	else if (exit_reason.basic == EXIT_REASON_EPT_MISCONFIG)
+	} else if (exit_reason.basic == EXIT_REASON_EPT_MISCONFIG){
+		add_exit_time((u16)exit_reason.basic, start);
 		return handle_ept_misconfig(vcpu);
+	}
 #endif
 
 	exit_handler_index = array_index_nospec((u16)exit_reason.basic,
@@ -6063,6 +6108,7 @@ static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
 	if (!kvm_vmx_exit_handlers[exit_handler_index])
 		goto unexpected_vmexit;
 
+	add_exit_time((u16)exit_reason.basic, start);
 	return kvm_vmx_exit_handlers[exit_handler_index](vcpu);
 
 unexpected_vmexit:
@@ -6075,6 +6121,7 @@ unexpected_vmexit:
 	vcpu->run->internal.ndata = 2;
 	vcpu->run->internal.data[0] = exit_reason.full;
 	vcpu->run->internal.data[1] = vcpu->arch.last_vmentry_cpu;
+	add_exit_time((u16)exit_reason.basic, start);
 	return 0;
 }
 

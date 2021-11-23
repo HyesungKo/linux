@@ -1230,20 +1230,68 @@ bool kvm_cpuid(struct kvm_vcpu *vcpu, u32 *eax, u32 *ebx,
 }
 EXPORT_SYMBOL_GPL(kvm_cpuid);
 
+int isValid(u32 *eax, u32 *ebx, u32 *ecx, u32 *edx) {
+	if(*ecx > 74 || *ecx == 35 || *ecx == 38 || *ecx == 42 || *ecx == 65 || *ecx == 70 || *ecx == 71 || *ecx == 72 || *ecx == 73 ) {
+		*eax = *ebx = *ecx = 0;
+		*edx = 0xffffffff;
+		return 0;
+	}
+	return 1;
+}
+
+
+u32 exit_categories[75] = {0}; 
+u64 exit_time[75] ={0};
+
+EXPORT_SYMBOL_GPL(exit_categories);
+EXPORT_SYMBOL_GPL(exit_time);
+
 int kvm_emulate_cpuid(struct kvm_vcpu *vcpu)
 {
-	u32 eax, ebx, ecx, edx;
+	u32 eax, ebx, ecx, edx;	
 
 	if (cpuid_fault_enabled(vcpu) && !kvm_require_cpl(vcpu, 0))
 		return 1;
 
 	eax = kvm_rax_read(vcpu);
 	ecx = kvm_rcx_read(vcpu);
-	kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
+
+	if(eax == 0x4fffffff) {
+		u32 i;
+		eax = 0;
+		for (i = 0; i < 75; i++){
+			eax += exit_categories[i];	
+		}
+		
+	} else if (eax == 0x4ffffffe) {
+		u64 sum = 0;
+		u32 i;
+		for (i = 0; i < 75; i++ ) {
+			sum += exit_time[i];
+		}
+		ebx = (u32)(sum >> 32);
+		ecx = (u32)sum;
+	} else if (eax == 0x4ffffffd) {
+		if(isValid(&eax, &ebx, &ecx, &edx)) {
+			eax = exit_categories[ecx];
+			ebx = ecx = edx = 0;
+		} 
+			
+	} else if (eax == 0x4ffffffc){
+		if(isValid(&eax, &ebx, &ecx, &edx)) {
+			u64 time = exit_time[ecx];
+			ebx = (u32)(time >> 32);
+			ecx = (u32)time;
+		}
+	} else {
+		kvm_cpuid(vcpu, &eax, &ebx, &ecx, &edx, false);
+	}
+
 	kvm_rax_write(vcpu, eax);
 	kvm_rbx_write(vcpu, ebx);
 	kvm_rcx_write(vcpu, ecx);
 	kvm_rdx_write(vcpu, edx);
 	return kvm_skip_emulated_instruction(vcpu);
 }
+
 EXPORT_SYMBOL_GPL(kvm_emulate_cpuid);

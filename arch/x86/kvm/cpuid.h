@@ -8,6 +8,10 @@
 #include <asm/processor.h>
 #include <uapi/asm/kvm_para.h>
 
+// extern u32 exit_categories[75];
+// extern u64 exit_time[75];
+
+
 extern u32 kvm_cpu_caps[NR_KVM_CPU_CAPS] __read_mostly;
 void kvm_set_cpu_caps(void);
 
