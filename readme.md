@@ -187,7 +187,7 @@ Keep press enter to answer the questions with default answer
 ![output3](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output3.png)  
 
 ## Assignment 2 and 3
-### Description
+###2.  Description
 To configure the cpuid, I have have edited 2 files in linux kernel, `arch/x86/kvm/cpuid.c`, `arch/x86/kvm/vmx/vmx.c`. Firstly, I have added two shared arrays to be used to store the number of exit and the time of the exit using `EXPORT_SYMBOL_GPL` and `extern` array.  
 Under the file `../cpuid.c`  
 		
@@ -204,14 +204,9 @@ Under the file `../vmx.c`
 
 When I add the above code in those two file, I have the shared variables, `exit_categories` and `exit_time`. Therefore, When I updated the variables in `vmx.c` file, I am able to access the updated variable from another file and read in `cpuid.c` file.  
 
-Under the file `../vmx.c` file, I have added 2 functions which is called in the funcion named `static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)`. The first function is `inc_exit_category((u16)exit_reason.basic)` which count the each exit based on the exit number. The other function is `add_exit_time((u16)exit_reason.basic)`, which count the cycle during each exit. `add_exit_time` function must be called before the function returns.  Those function will update the variable declared above.  
+Under the file `../vmx.c`, I have added 2 functions which is called in the funcion named `static int __vmx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)`. The first function is `inc_exit_category((u16)exit_reason.basic)` which count the each exit based on the exit number. The other function is `add_exit_time((u16)exit_reason.basic)`, which count the cycle during each exit. `add_exit_time` function must be called before the function returns. Those function will update the variable declared above.  
 
-To use rdtsc to count the cycle, I need to add the following in `../vmx.c` file.  
-		
-	#define _MM_MALLOC_H_INCLUDED
-	#include <x86intrin.h>
-	 
-The function update the arrays are following:
+The update functions for the arrays are following:  
 
 	void inc_exit_category(u16 reason_index)
 	{
@@ -228,15 +223,21 @@ The function update the arrays are following:
 		}
 	}
 
+To use rdtsc to count the cycle, I need to add the following in `../vmx.c` file.  
+		
+	#define _MM_MALLOC_H_INCLUDED
+	#include <x86intrin.h>
+	 
+
 To read the count and cycle following code are used for each eax value:  
 
 1. For CPUID leaf node %eax=0x4FFFFFFF:  
 		
 		u32 i;
-	        eax = 0;
-	        for (i = 0; i < 75; i++){
-	                eax += exit_categories[i];
-	        }
+		eax = 0;
+		for (i = 0; i < 75; i++){
+			eax += exit_categories[i];
+		}
 	        
 2. For CPUID leaf node %eax=0x4FFFFFFE:  
 		
@@ -246,34 +247,45 @@ To read the count and cycle following code are used for each eax value:
 			sum += exit_time[i];
 		}
 		ebx = (u32)(sum >> 32);
-		ecx = (u32)sum;
+		ecx = (u32)sum;  
 
 
 3. For CPUID leaf node %eax=0x4FFFFFFD:  
 		
 		if(isValid(&eax, &ebx, &ecx, &edx)) {
-	                eax = exit_categories[ecx];
-	                ebx = ecx = edx = 0;
-	        }
+			eax = exit_categories[ecx];
+			ebx = ecx = edx = 0;
+		}  
+	        
 4. For CPUID leaf node %eax=0x4FFFFFFC:  
 		
 		if(isValid(&eax, &ebx, &ecx, &edx)) {
-	                u64 time = exit_time[ecx];
-	                ebx = (u32)(time >> 32);
-	                ecx = (u32)time;
-	        }
+			u64 time = exit_time[ecx];
+			ebx = (u32)(time >> 32);
+			ecx = (u32)time;
+		}  
 	        
 
-isValid function check the ecx value is correct and the code is following:  
+`isValid()` function check the ecx value is correct and the code is following:  
+	
 	if(isValid(&eax, &ebx, &ecx, &edx)) {
                 u64 time = exit_time[ecx];
                 ebx = (u32)(time >> 32);
                 ecx = (u32)time;
-        }
+	}
 
+When I modified the codes above I change the directory to linux file and reload the `kvm` and `kvm_intel` modules using the following command.  
 
+	$ make -j 4 modules
+	$ sudo make INSTALL_MOD_STRIP=1 modules_install
+	$ sudo rmmod kvm_intel
+	$ sudo rmmod kvm
+	$ sudo modprobe kvm
+	$ sudo modprobe kvm_intel
 
+Once I load the updated `kvm` and `kvm_intel` modules, open the virtual machine using `virt-manager` and test the cpuid features. The outputs are following:  
 
+![fe](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/fe.png)
 
 
 
