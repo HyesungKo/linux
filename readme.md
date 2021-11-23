@@ -190,6 +190,7 @@ Keep press enter to answer the questions with default answer
 ### Description
 To configure the cpuid, I have have edited 2 files in linux kernel, `arch/x86/kvm/cpuid.c`, `arch/x86/kvm/vmx/vmx.c`. Firstly, I have added two shared arrays to be used to store the number of exit and the time of the exit using `EXPORT_SYMBOL_GPL` and `extern` array.  
 Under the file `../cpuid.c`  
+		
 		u32 exit_categories[75] = {0};
 		u64 exit_time[75] ={0};
 
@@ -197,6 +198,7 @@ Under the file `../cpuid.c`
 		EXPORT_SYMBOL_GPL(exit_time);
 
 Under the file `../vmx.c`  
+		
 		extern u32 exit_categories[75];
 		extern u64 exit_time[75];
 
