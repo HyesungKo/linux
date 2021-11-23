@@ -186,8 +186,8 @@ Keep press enter to answer the questions with default answer
 ![output2](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output2.png)  
 ![output3](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/output3.png)  
 
-## Assignment 2 and 3
-###2.  Description
+## Assignment 2 (0x4fffffff, 0x4ffffffe) and 3(0x4ffffffd, 0x4ffffffc)
+### Q2. Description
 To configure the cpuid, I have have edited 2 files in linux kernel, `arch/x86/kvm/cpuid.c`, `arch/x86/kvm/vmx/vmx.c`. Firstly, I have added two shared arrays to be used to store the number of exit and the time of the exit using `EXPORT_SYMBOL_GPL` and `extern` array.  
 Under the file `../cpuid.c`  
 		
@@ -291,6 +291,9 @@ Once I load the updated `kvm` and `kvm_intel` modules, open the virtual machine 
 ![fe](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/fe.png)
 ![dc](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/dc.png)
 
+### Q3. will be updated soon
+
+### Q4. Will be updated soon
 
 
 
