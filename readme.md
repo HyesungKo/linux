@@ -304,9 +304,10 @@ The number of total exits after the full boot load (after ubuntu on VM booted) :
 
 The most frequent exit type is EPT violation, whose exit reasom number is 48 (0x30).  
 The least performed exit types are the ones in the following outputs. Those includes the one with eax==0x00000000 and edx=0x00000000. If edx=ffffffff, the exit number is not defined in the SDM.  
-In the cycle-wise, HLT exit takes the most cycles out of all exit types.  
+In the cycle-wise, HLT exit have taken the most cycles out of all exit types.  
 
 `$ for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done` produces the following output.  
+
 		CPU:   0x4ffffffd 0x00: eax=0x00010a67 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 		CPU:   0x4ffffffd 0x01: eax=0x00088a34 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 		CPU:   0x4ffffffd 0x02: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -383,7 +384,9 @@ In the cycle-wise, HLT exit takes the most cycles out of all exit types.
 		CPU:   0x4ffffffd 0x49: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0xffffffff
 		CPU:   0x4ffffffd 0x4a: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 
-`for i in {0..74}; do cpuid -1 -l 0x4ffffffc -s $i; done`
+
+`for i in {0..74}; do cpuid -1 -l 0x4ffffffc -s $i; done`  
+
 		CPU:   0x4ffffffc 0x00: eax=0x4ffffffc ebx=0x00000000 ecx=0x0024833b edx=0xffffbef5
 		CPU:   0x4ffffffc 0x01: eax=0x4ffffffc ebx=0x00000000 ecx=0x0b65b29b edx=0xffffbef5
 		CPU:   0x4ffffffc 0x02: eax=0x4ffffffc ebx=0x00000000 ecx=0x00000000 edx=0xffffbef5
