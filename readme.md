@@ -306,7 +306,7 @@ The most frequent exit type is EPT violation, whose exit reasom number is 48 (0x
 The least performed exit types are the ones in the following outputs. Those includes the one with eax==0x00000000 and edx=0x00000000. If edx=ffffffff, the exit number is not defined in the SDM.  
 In the cycle-wise, HLT exit have taken the most cycles out of all exit types.  
 
-`$ for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done` produces the following output.  
+`$ for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done` produces the following output. The outputs of the `cpuid 0x4ffffffd` with various exit type numbers, from 0 to 74, are stored in the eax register. if exit types are not supported by SDM, the edx value will be 0xffffffff.  
 
 		CPU:   0x4ffffffd 0x00: eax=0x00010a67 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 		CPU:   0x4ffffffd 0x01: eax=0x00088a34 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -385,7 +385,7 @@ In the cycle-wise, HLT exit have taken the most cycles out of all exit types.
 		CPU:   0x4ffffffd 0x4a: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 
 
-`for i in {0..74}; do cpuid -1 -l 0x4ffffffc -s $i; done`  
+`for i in {0..74}; do cpuid -1 -l 0x4ffffffc -s $i; done` produce the following output.The outputs of the `cpuid 0x4ffffffc` with various exit type numbers, from 0 to 74, are stored in the ebx and the ecx registers. The high 32 bits of the value are stored in the ebx and the low 32 bits of the value are stored in the ecx. if exit types are not supported by SDM, the edx value will be 0xffffffff.  
 
 		CPU:   0x4ffffffc 0x00: eax=0x4ffffffc ebx=0x00000000 ecx=0x0024833b edx=0xffffbef5
 		CPU:   0x4ffffffc 0x01: eax=0x4ffffffc ebx=0x00000000 ecx=0x0b65b29b edx=0xffffbef5
