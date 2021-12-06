@@ -4,13 +4,13 @@ by Hyesung Ko
 ## Assignment 4
 ### Question 1
 
-I did the assignment my self.  
+I did the assignment mybself.  
 
 ### Question 2. Include a sample of your print of exit count output from dmesg from “with ept” and “without ept”.
 
 With EPT  
 ![With EPT](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/nested.png)  
-
+	
 		CPU:   0x4ffffffd 0x00: eax=0x0000440b ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 		CPU:   0x4ffffffd 0x01: eax=0x0000e9e5 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 		CPU:   0x4ffffffd 0x02: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -168,4 +168,15 @@ Without EPT
 
 ### Question 3. What did you learn from the count of exits? Was the count what you expected? If not, why not?
 
+When I compared the total number of exit of VM with EPT and VM without EPT, VM without EPT exited almost 10 times more than VM with EPT. In terms of the comparison of cycles of total exits, VM without EPT took almost 9 times more cycle than VM with EPT. I expected the result above because VM without EPT (shadow paging) was supposed to perform vm-exit more than VM with EPT (nested paging).
 
+### Question 4. What changed between the two runs (ept vs no-ept)?
+
+Only no-EPT
+0xe ................ 0x3a
+
+only EPT
+0x30 0x31
+
+Same
+0xa 0xc
