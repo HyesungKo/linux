@@ -4,7 +4,7 @@ by Hyesung Ko
 ## Assignment 4
 ### Question 1
 
-I did the assignment mybself.  
+I did the assignment 4 myself.  
 
 ### Question 2. Include a sample of your print of exit count output from dmesg from “with ept” and “without ept”.
 
