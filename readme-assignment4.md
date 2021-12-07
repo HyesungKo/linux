@@ -172,11 +172,23 @@ When I compared the total number of exit of VM with EPT and VM without EPT, VM w
 
 ### Question 4. What changed between the two runs (ept vs no-ept)?
 
-Only no-EPT
-0xe ................ 0x3a
+1. The exits where no-ept is significantly greater than ept
 
-only EPT
-0x30 0x31
+		0x0 (0) : Exception or non-maskable interrupt
+		0x1 (1) : External interrupt
+		0x7 (7) : Interrupt window
+		0x1c (28) : Control-register accesses
+		0x20 (32) : WRMSR
+		0x28 (40) : PAUSE
+		0x34 (52) : VMX-preemption timer expired
 
-Same
-0xa 0xc
+2. The exits only appears on no-ept
+
+		0xe (14) : INVLPG
+		0x21 (33) : VM-entry failure due to invalid guest state
+		0x3a (58) : INVPCID
+
+3. The exits only appears on ept
+
+		0x30 (48) : EPT violation
+		0x31 (49) : EPT misconfiguration 
