@@ -8,7 +8,7 @@ I did the assignment 4 myself.
 
 ### Question 2. Include a sample of your print of exit count output from dmesg from “with ept” and “without ept”.
 
-With EPT  
+1. With EPT  
 ![With EPT](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/nested.png)  
 	
 	CPU:   0x4ffffffd 0x00: eax=0x0000440b ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -87,7 +87,7 @@ With EPT
 	CPU:   0x4ffffffd 0x49: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0xffffffff
 	CPU:   0x4ffffffd 0x4a: eax=0x00000000 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
 
-Without EPT  
+2. Without EPT  
 ![Without EPT](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/shadow.png)  
 
 	CPU:   0x4ffffffd 0x00: eax=0x001e6c35 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -168,7 +168,7 @@ Without EPT
 
 ### Question 3. What did you learn from the count of exits? Was the count what you expected? If not, why not?
 
-When I compared the total number of exit of VM with EPT and VM without EPT, VM without EPT exited almost 10 times more than VM with EPT. In terms of the comparison of cycles of total exits, VM without EPT took almost 9 times more cycle than VM with EPT. I expected the result above because VM without EPT (shadow paging) was supposed to perform vm-exit more than VM with EPT (nested paging).
+When I compared the total number of exit of VM with EPT and VM without EPT, VM without EPT exited almost 10 times more than VM with EPT. In terms of the comparison of cycles of total exits, VM without EPT took almost 9 times more cycle than VM with EPT. I expected the result above because VM without EPT (shadow paging) was supposed to perform more vm-exits than VM with EPT (nested paging).
 
 ### Question 4. What changed between the two runs (ept vs no-ept)?
 
