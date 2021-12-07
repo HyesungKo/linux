@@ -10,7 +10,6 @@ I did the assignment 4 myself.
 
 1. With EPT  
 ![With EPT](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/nested.png)  
-
 Output of `for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done`  
 
 		CPU:   0x4ffffffd 0x00: eax=0x0000440b ebx=0x00000000 ecx=0x00000000 edx=0x00000000
@@ -91,7 +90,6 @@ Output of `for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done`
 
 2. Without EPT  
 ![Without EPT](https://github.com/HyesungKo/linux/blob/master/cmpe283/output/shadow.png)  
-
 Output of `for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done`  
 
 		CPU:   0x4ffffffd 0x00: eax=0x001e6c35 ebx=0x00000000 ecx=0x00000000 edx=0x00000000
