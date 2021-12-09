@@ -170,7 +170,7 @@ Output of `for i in {0..74}; do cpuid -1 -l 0x4ffffffd -s $i; done`
 
 ### Question 3. What did you learn from the count of exits? Was the count what you expected? If not, why not?
 
-When I compared the total number of exit of VM with EPT and VM without EPT, VM without EPT exited almost 10 times more than VM with EPT. In terms of the comparison of cycles of total exits, VM without EPT took almost 7 times more cycle than VM with EPT. I expected the result above because VM without EPT (shadow paging) was supposed to perform more vm-exits than VM with EPT (nested paging).
+When I compared the total number of exit of VM with EPT and VM without EPT, VM without EPT exited almost 10 times more than VM with EPT. In terms of the comparison of cycles of total exits, VM without EPT took almost 7 times more cycle than VM with EPT. I expected the result above because VM without EPT (shadow paging) was supposed to perform more vm-exits than VM with EPT (nested paging). 
 
 ### Question 4. What changed between the two runs (ept vs no-ept)?
 
